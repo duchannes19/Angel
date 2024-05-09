@@ -13,9 +13,12 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 # Get the path of the current directory
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
+print('Loading model...')
 # Construct the path to the trained model file
 model_path = os.path.join(current_directory, 'url_classifier.pth')
 model = load_model(model_path)
+print('Model loaded successfully!')
+model.eval()
 
 # Define a route to receive URL requests
 @app.route('/analyze_url', methods=['POST'])
