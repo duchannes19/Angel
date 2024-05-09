@@ -1,3 +1,6 @@
 torch
 sklearn
 numpy
+pandas
+flask
+keras
