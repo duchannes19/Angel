@@ -28,6 +28,8 @@ class URLClassifier(nn.Module):
         return output
 
 def load_model(model_path):
+    
+    # Load the model
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')  # Initialize the BERT tokenizer
     vocab_size = len(tokenizer)  # Size of the vocabulary
     embedding_dim = 128  # Dimensionality of token embeddings
@@ -36,5 +38,11 @@ def load_model(model_path):
     label_encoder.classes_ = ['benign', 'phishing', 'defacement', 'malware']  # Load the classes
     num_classes = len(label_encoder.classes_)  # Number of classes
     model = URLClassifier(vocab_size, embedding_dim, hidden_dim, num_classes)  # Initialize the model
-    model.load_state_dict(torch.load(model_path))
+    # Check if a GPU is available and move the model to the GPU
+    if torch.cuda.is_available():
+        model = model.cuda()
+        model.load_state_dict(torch.load(model_path))
+    else:
+        model = model.cpu()
+        model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     return model

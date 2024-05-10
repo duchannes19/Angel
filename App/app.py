@@ -31,6 +31,9 @@ print('Model is in evaluation mode!')
 def analyze_url():
     # Get the URL from the request
     url = request.json.get('url')
+    
+    # Preprocess the URL by removing leading/trailing whitespaces and converting it to lowercase, and remove the protocol
+    url = url.strip().lower().replace('http://', '').replace('https://', '')
 
     print(f'Analyzing URL: {url}')
     
