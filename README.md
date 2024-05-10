@@ -26,7 +26,7 @@
      ```
 
 4. **Installing Requirements.txt:**
-   - Navigate to the directory where your requirements.txt file is located.
+   - Navigate to the directory where the requirements.txt file is located.
    - Install the requirements using the following command:
      ```bash
      pip install -r requirements.txt
@@ -35,4 +35,6 @@
 
 ## On the train.ipynb
 
-1. Select the kernel 'ml' from the pop up window in Visual Studio Code.
+1. Select the kernel 'ml' from the pop up window in Visual Studio Code when using ipynb.
+
+2. When running the Flask app use the ml python environment.

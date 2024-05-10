@@ -9,7 +9,7 @@ class URLClassifier(nn.Module):
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.conv1 = nn.Conv1d(embedding_dim, hidden_dim, kernel_size=3, padding=1)
         self.pool = nn.MaxPool1d(kernel_size=2, stride=2)
-        self.fc1 = nn.Linear(hidden_dim * (512 // 2), hidden_dim)  # Adjusted input size
+        self.fc1 = nn.Linear(hidden_dim * 256, hidden_dim)  # Adjusted input size for 512 tokens
         self.fc2 = nn.Linear(hidden_dim, num_classes)
         self.dropout = nn.Dropout(0.5)
         self.relu = nn.ReLU()
@@ -29,6 +29,8 @@ class URLClassifier(nn.Module):
 
 def load_model(model_path):
     
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
     # Load the model
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')  # Initialize the BERT tokenizer
     vocab_size = len(tokenizer)  # Size of the vocabulary
@@ -39,10 +41,11 @@ def load_model(model_path):
     num_classes = len(label_encoder.classes_)  # Number of classes
     model = URLClassifier(vocab_size, embedding_dim, hidden_dim, num_classes)  # Initialize the model
     # Check if a GPU is available and move the model to the GPU
-    if torch.cuda.is_available():
-        model = model.cuda()
+    if device.type == 'cuda':
+        print('Moving model to GPU...')
         model.load_state_dict(torch.load(model_path))
     else:
+        print('Moving model to CPU...')
         model = model.cpu()
         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     return model

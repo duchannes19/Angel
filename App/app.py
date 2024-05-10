@@ -2,7 +2,10 @@ from flask import Flask, request, jsonify
 from transformers import BertTokenizer
 import torch
 import os
+import joblib
 from model import load_model
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 
 app = Flask(__name__)
 
@@ -19,12 +22,18 @@ print('Loading model...')
 model_path = os.path.join(current_directory, 'url_classifier.pth')
 model = load_model(model_path)
 
-print('Model loaded successfully!')
+print('CNN loaded successfully!')
 
 # Set the model to evaluation mode
 model.eval()
 
-print('Model is in evaluation mode!')
+print('CNN is in evaluation mode!')
+
+# Load Logistic Regression model
+#logistic_model_path = os.path.join(current_directory, 'logistic_regression_model.pkl')
+#logistic_model = joblib.load(logistic_model_path)
+#print(logistic_model)
+#print('Logistic Regression model loaded successfully!')
 
 # Define a route to receive URL requests
 @app.route('/analyze_url', methods=['POST'])
@@ -36,9 +45,18 @@ def analyze_url():
     url = url.strip().lower().replace('http://', '').replace('https://', '')
 
     print(f'Analyzing URL: {url}')
-    
+
+    # Convert the URL to a feature vector using the TF-IDF vectorizer with 590757 features
+    #vectorizer = TfidfVectorizer()
+    #vectorizer.fit([url])
+    #url_vector = vectorizer.transform([url])
+
+    # Perform inference using the logistic regression model
+    #logistic_prediction = logistic_model.predict(url_vector)[0]
+
+    # Perform inference using the CNN model
     # Preprocess the URL and tokenize it using the BERT tokenizer not modified
-    tokens = tokenizer.encode_plus(url, add_special_tokens=True, max_length=512, truncation=True, padding='max_length', return_tensors='pt')
+    tokens = tokenizer.encode_plus(url, add_special_tokens=True, truncation=True, padding='max_length', return_tensors='pt')
     
     print('URL tokenized successfully!')
 
@@ -56,7 +74,7 @@ def analyze_url():
     print(f'Prediction: {prediction}')
     
     # Return the prediction as JSON response
-    return jsonify({'prediction': prediction})
+    return jsonify({'prediction': prediction, }) #'logistic_prediction': logistic_prediction})
 
 if __name__ == '__main__':
     app.run(debug=True)
