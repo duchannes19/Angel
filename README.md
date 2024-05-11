@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="angel.png" alt="Image" width="50%" height="50%">
+    <img src="angel.png" alt="Image" width="30%" height="30%">
 </p>
 
 # ANGELs (Automated Network Guardian and Enhanced Local Security)
@@ -33,8 +33,10 @@
      ```
    - This may require administrative rights.
 
-## On the train.ipynb
+## For Training on Juppyter NB
 
 1. Select the kernel 'ml' from the pop up window in Visual Studio Code when using ipynb.
 
 2. When running the Flask app use the ml python environment.
+
+## For the Server Application use the start.py with the right conda environment.

@@ -5,3 +5,10 @@ pandas
 flask
 keras
 transformers
+requests
+python-magic-bin==0.4.14
+python-magic-bin
+pefile
+cryptography
+asn1crypto
+netifaces
