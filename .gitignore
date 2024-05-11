@@ -1,4 +1,2 @@
-Training/url.mat
-Training/url_svmlight
-Training/url_svmlight/*
-Training/url_svmlight.tar.gz
+output/
+Server/__pycache__

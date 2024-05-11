@@ -18,12 +18,16 @@ if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'envs
 def display_menu():
     print("Select a service to start:")
     print("1. Angel Server")
-    print("2. Exit")
+    print("2. Install dependencies")
+    print("3. Exit")
 
 def execute_service(service_number):
     if service_number == 1:
         # Start the Angel Server with anaconda environment
         os.system(f"python {current_directory}\\Server\\app.py")
+    elif service_number == 2:
+        # Install dependencies
+        os.system(f"pip install -r {current_directory}\\requirements.txt")
     else:
         print("Exiting...")
         exit()
@@ -34,12 +38,10 @@ def main():
         choice = input("Enter your choice: ")
         try:
             choice = int(choice)
-            if choice < 1 or choice > 4:
+            if choice < 1 or choice > 3:
                 print("Invalid choice. Please try again.")
                 continue
             execute_service(choice)
-            if choice == 4:
-                break
         except ValueError:
             print("Invalid choice. Please enter a number.")
 
