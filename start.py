@@ -8,13 +8,6 @@ ans = open(f"{current_directory}\\angel.txt", "r")
 print(ans.read())
 print("Welcome to the Angel Server!\n")
 
-# Detect anaconda environment
-if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'envs')):
-    print("Anaconda environment detected.")
-    print("Please activate the environment before starting the server.")
-    print("Exiting...")
-    exit()
-
 def display_menu():
     print("Select a service to start:")
     print("1. Angel Server")
@@ -24,12 +17,14 @@ def display_menu():
 def execute_service(service_number):
     if service_number == 1:
         # Start the Angel Server with anaconda environment
+        print("\nStarting the Angel Server...\n")
         os.system(f"python {current_directory}\\Server\\app.py")
     elif service_number == 2:
         # Install dependencies
+        print("\nInstalling dependencies...\n")
         os.system(f"pip install -r {current_directory}\\requirements.txt")
     else:
-        print("Exiting...")
+        print("\nExiting...\n")
         exit()
 
 def main():

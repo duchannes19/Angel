@@ -64,10 +64,7 @@ print('CNN is in evaluation mode!')
 @app.route('/analyze_url', methods=['POST'])
 def analyze_url():
     # Get the URL from the request
-    pure_url = request.json.get('url')
-    
-    # Preprocess the URL by removing leading/trailing whitespaces and converting it to lowercase, and remove the protocol
-    url = pure_url.strip().lower().replace('http://', '').replace('https://', '')
+    url = request.json.get('url')
 
     print(f'Analyzing URL: {url}')
 
@@ -96,28 +93,28 @@ def analyze_url():
     class_labels = ['benign', 'phishing', 'defacement', 'malware']
     prediction = class_labels[predicted.item()]
     
+    # Default malware result
     malware_result = 'No malware scanned'
     
     # Find last dot after the last slash
-    last_slash = pure_url.rfind('/')
-        
-    print("Last slash: ", pure_url[last_slash:])
+    last_slash = url.rfind('/')
     
-    regex = re.search(r'\.[a-zA-Z0-9]+', pure_url[last_slash:])
+    # Find the file extension using regex    
+    regex = re.search(r'\.[a-zA-Z0-9]+', url[last_slash:])
     
     regex_result = regex.group(0) if regex is not None else None
     
     print("Regex result: ", regex_result)
     
     # Check if the URL has a file extension
-    if len(pure_url) > last_slash + 1 and regex_result is not None:
+    if len(url) > last_slash + 1 and regex_result is not None:
         # Get the file extension
-        file_extension = pure_url.split('.')[-1]
+        file_extension = url.split('.')[-1]
         # Download the URL content and save it inside the 'Scanner' directory
         download_location = os.path.join(current_directory, 'Scanner', 'malicious_file.' + file_extension)
         try:
             print('Downloading file for scanning...')
-            urlretrieve(pure_url, download_location)
+            urlretrieve(url, download_location)
             # Scan the downloaded file for malware and wait for the result
             malware_result = scan_malware(download_location)
             # Remove the downloaded file
