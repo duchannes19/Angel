@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "Request Blocker",
+    "version": "1.0",
+    "permissions": [
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess",
+        "declarativeNetRequestFeedback",
+        "storage"
+    ],
+    "background": {
+        "service_worker": "src/background.js"
+    },
+    "host_permissions": [
+        "*://*/*"
+    ],
+    "action": {
+        "default_popup": "index.html"
+    },
+    "declarative_net_request": {
+        "rule_resources": [
+            {
+                "id": "ruleset_1",
+                "enabled": true,
+                "path": "rules.json"
+            }
+        ]
+    }
+}
