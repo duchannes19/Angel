@@ -1,2 +1,5 @@
 output/
 node_modules
+output.txt
+convert.py
+benign.txt

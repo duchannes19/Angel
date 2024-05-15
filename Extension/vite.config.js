@@ -14,9 +14,7 @@ export default defineConfig({
         popup: 'index.html' // Ensure this matches your popup HTML
       },
       output: {
-        entryFileNames: '[name].js',
-        chunkFileNames: '[name].js',
-        assetFileNames: '[name].[ext]'
+        entryFileNames: '[name].js'
       }
     }
   }
