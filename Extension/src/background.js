@@ -4,7 +4,7 @@ async function sendMessageToActiveTab(message) {
     const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
     const response = await chrome.tabs.sendMessage(tab.id, message);
     return response;
-  }  
+}
 
 // Function to analyze and update rules dynamically
 const analyzeAndBlock = async (url, sender) => {
@@ -35,6 +35,9 @@ const analyzeAndBlock = async (url, sender) => {
             chrome.declarativeNetRequest.updateDynamicRules({
                 addRules: [{ id: ruleId, priority: 1, action: { type: 'block' }, condition: { urlFilter: url } }]
             });
+
+            const blockPage = await sendMessageToActiveTab({ type: 'blockPage' });
+            console.log('Page blocked:', blockPage);
         } else {
             // Allow the page if it's benign
             console.log('Allowing URL:', url);
@@ -54,13 +57,17 @@ const analyzeAndBlock = async (url, sender) => {
             // Get all IDs of the rules
             const ruleIds = existingRules.map((rule) => rule.id);
 
-            if(existingRules.length > 0) {
+            if (existingRules.length > 0) {
                 console.log('Rules already exists, removing:', existingRules);
                 chrome.declarativeNetRequest.updateDynamicRules({
                     removeRuleIds: ruleIds
                 });
                 return;
             }
+
+            const hideLoader = await sendMessageToActiveTab({ type: 'hideLoader' });
+            const hideOverlay = await sendMessageToActiveTab({ type: 'hideOverlay' });
+            console.log('Loader hidden:', hideLoader, hideOverlay)
 
             // Analyze other requests on the page
             //analyzeOtherRequests();
@@ -76,9 +83,6 @@ const analyzeAndBlock = async (url, sender) => {
     } finally {
         // Hide loader on the page
         console.log('Done analyzing URL:', url);
-        // Send message to content script to hide loader
-        //const hideLoader = await sendMessageToActiveTab({ type: 'hideLoader' });
-        //console.log('Loader hidden:', hideLoader)
     }
 };
 

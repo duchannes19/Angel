@@ -76,9 +76,8 @@ def analyze_url():
     # Perform inference using the logistic regression model
     #logistic_prediction = logistic_model.predict(url_vector)[0]
 
-    # Remove the https and use http instead
-    url = url.replace('https://', 'http://')
-    #url = url.rstrip('/')
+    # Remove protocol at the beginning of the URL and www. if present
+    url = re.sub(r'^https?:\/\/(www\.)?', '', url).strip()
     
     print('URL preprocessed: ', url)
 
