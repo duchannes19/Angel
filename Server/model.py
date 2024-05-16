@@ -37,7 +37,7 @@ def load_model(model_path):
     embedding_dim = 128  # Dimensionality of token embeddings
     hidden_dim = 64  # Number of output channels for the convolutional layer
     label_encoder = LabelEncoder()  # Initialize the label encoder
-    label_encoder.classes_ = ['benign', 'phishing', 'defacement', 'malware']  # Load the classes
+    label_encoder.classes_ = ['benign', 'malware']  # Load the classes
     num_classes = len(label_encoder.classes_)  # Number of classes
     model = URLClassifier(vocab_size, embedding_dim, hidden_dim, num_classes)  # Initialize the model
     

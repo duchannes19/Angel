@@ -96,7 +96,7 @@ def analyze_url():
     _, predicted = torch.max(outputs, 1)
     
     # Map the class label to a human-readable prediction
-    class_labels = ['benign', 'phishing', 'defacement', 'malware']
+    class_labels = ['benign', 'malware']
     prediction = class_labels[predicted.item()]
     
     # Default malware result
