@@ -29,10 +29,29 @@ const analyzeAndBlock = async (url, sender) => {
         } else {
             // Allow the page if it's benign
             console.log('Allowing URL:', url);
-            // To remove a rule, we don't need to provide the ID
-            chrome.declarativeNetRequest.updateDynamicRules({
-                removeRules: [{ urlFilter: url }]
+            // Check if the rule already exists with the same URL
+            // If it exists, we remove it
+
+            const rules = await new Promise((resolve) => {
+                chrome.declarativeNetRequest.getDynamicRules((rules) => {
+                    resolve(rules);
+                });
             });
+
+            console.log('Rules:', rules)
+
+            const existingRules = rules.filter((rule) => rule.condition.urlFilter === url);
+
+            // Get all IDs of the rules
+            const ruleIds = existingRules.map((rule) => rule.id);
+
+            if(existingRules.length > 0) {
+                console.log('Rules already exists, removing:', existingRules);
+                chrome.declarativeNetRequest.updateDynamicRules({
+                    removeRuleIds: ruleIds
+                });
+                return;
+            }
 
             // Analyze other requests on the page
             //analyzeOtherRequests();
