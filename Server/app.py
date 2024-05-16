@@ -76,8 +76,11 @@ def analyze_url():
     # Perform inference using the logistic regression model
     #logistic_prediction = logistic_model.predict(url_vector)[0]
 
-    # Remove the 'http://' or 'https://' and www. from the URL
-    url = re.sub(r'https?://(www\.)?', '', url)
+    # Remove the https and use http instead
+    url = url.replace('https://', 'http://')
+    #url = url.rstrip('/')
+    
+    print('URL preprocessed: ', url)
 
     # Perform inference using the CNN model
     # Preprocess the URL and tokenize it using the BERT tokenizer not modified

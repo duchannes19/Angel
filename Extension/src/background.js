@@ -1,12 +1,21 @@
 // background.js
 
+async function sendMessageToActiveTab(message) {
+    const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    const response = await chrome.tabs.sendMessage(tab.id, message);
+    return response;
+  }  
+
 // Function to analyze and update rules dynamically
 const analyzeAndBlock = async (url, sender) => {
     try {
         // Show loader on the page
         console.log('Analyzing URL:', url);
 
-        chrome.tabs.sendMessage(sender.tab.id, { type: 'showLoader' });
+        // Send message to content script to show loader
+        const setLoader = await sendMessageToActiveTab({ type: 'showLoader' });
+
+        console.log('Loader set:', setLoader)
 
         const response = await fetch('http://localhost:5000/analyze_url', {
             method: 'POST',
@@ -24,7 +33,7 @@ const analyzeAndBlock = async (url, sender) => {
             // ruleId is a SHORT unique identifier for the rule based on the order of addition INTEGER
             const ruleId = parseInt(Math.random().toString(36).substring(7), 36)
             chrome.declarativeNetRequest.updateDynamicRules({
-                addRules: [{ id: ruleId, action: { type: 'block' }, condition: { urlFilter: url } }]
+                addRules: [{ id: ruleId, priority: 1, action: { type: 'block' }, condition: { urlFilter: url } }]
             });
         } else {
             // Allow the page if it's benign
@@ -61,13 +70,15 @@ const analyzeAndBlock = async (url, sender) => {
         // Handle error: show error message and block the page
         const ruleId = parseInt(Math.random().toString(36).substring(7), 36)
         chrome.declarativeNetRequest.updateDynamicRules({
-            addRules: [{ id: ruleId, action: { type: 'block' }, condition: { urlFilter: url } }]
+            addRules: [{ id: ruleId, priority: 1, action: { type: 'block' }, condition: { urlFilter: url } }]
         });
         chrome.tabs.sendMessage(sender.tab.id, { type: 'showError', message: 'Error analyzing URL' });
     } finally {
         // Hide loader on the page
         console.log('Done analyzing URL:', url);
-        chrome.tabs.sendMessage(sender.tab.id, { type: 'hideLoader' });
+        // Send message to content script to hide loader
+        //const hideLoader = await sendMessageToActiveTab({ type: 'hideLoader' });
+        //console.log('Loader hidden:', hideLoader)
     }
 };
 

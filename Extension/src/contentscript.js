@@ -52,8 +52,10 @@ const showError = (message) => {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'showLoader') {
     showLoader();
+    sendResponse({ message: 'Loader displayed' });
   } else if (request.type === 'hideLoader') {
     hideLoader();
+    sendResponse({ message: 'Loader hidden' });
   }
 });
 

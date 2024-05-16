@@ -6,7 +6,8 @@
         "declarativeNetRequest",
         "declarativeNetRequestWithHostAccess",
         "declarativeNetRequestFeedback",
-        "storage"
+        "storage",
+        "tabs"
     ],
     "background": {
         "service_worker": "src/background.js"
