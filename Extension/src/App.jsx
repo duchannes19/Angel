@@ -1,7 +1,7 @@
 // Chrome Extension: Request Blocker
 
 import React, { useEffect, useState } from 'react';
-import { Box, Heading, List, ListItem, Text, Image } from '@chakra-ui/react';
+import { Box, Button, List, ListItem, Text, Image } from '@chakra-ui/react';
 
 import Angel from './assets/angel.png';
 
@@ -11,7 +11,6 @@ const App = () => {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-
     // Check if logs exist in storage
     if (chrome.storage) {
       // Fetch logs from storage and update state
@@ -23,11 +22,18 @@ const App = () => {
     }
   }, []);
 
+  const clearLogs = () => {
+    if (chrome.storage) {
+      chrome.storage.local.set({ logs: [] });
+      setLogs([]);
+    }
+  }
+
   return (
-    <Box p={4} className=''>
-      <Image src={Angel} alt="Logo" mb={4} w={'30%'} />
-      <Heading as="h1" size="lg" mb={4}>Request Blocker</Heading>
-      <List spacing={3}>
+    <Box p={4} className='' display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'}>
+      <Image src={Angel} alt="Logo" mb={2} w={'50%'} />
+      <Button onClick={() => clearLogs()}>Clear Logs</Button>
+      <List spacing={3} textAlign={'center'}>
         {logs.map((log, index) => (
           <ListItem key={index}>
             <Text>{log.url} - {log.malicious ? 'Blocked' : 'Allowed'}</Text>

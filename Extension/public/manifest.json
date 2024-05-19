@@ -3,38 +3,42 @@
     "name": "Request Blocker",
     "version": "1.0",
     "permissions": [
-        "declarativeNetRequest",
-        "declarativeNetRequestWithHostAccess",
-        "declarativeNetRequestFeedback",
-        "storage",
-        "tabs"
+      "declarativeNetRequest",
+      "declarativeNetRequestWithHostAccess",
+      "declarativeNetRequestFeedback",
+      "storage",
+      "tabs",
+      "activeTab"
     ],
     "background": {
-        "service_worker": "src/background.js"
+      "service_worker": "src/background.js"
     },
     "host_permissions": [
-        "*://*/*"
+      "*://*/*"
     ],
     "content_scripts": [
-        {
-            "matches": [
-                "<all_urls>"
-            ],
-            "js": [
-                "src/contentscript.js"
-            ]
-        }
+      {
+        "matches": ["<all_urls>"],
+        "js": ["src/contentscript.js"]
+      }
     ],
     "action": {
-        "default_popup": "index.html"
+      "default_popup": "index.html"
     },
     "declarative_net_request": {
-        "rule_resources": [
-            {
-                "id": "ruleset_1",
-                "enabled": true,
-                "path": "rules.json"
-            }
-        ]
-    }
-}
+      "rule_resources": [
+        {
+          "id": "ruleset_1",
+          "enabled": true,
+          "path": "rules.json"
+        }
+      ]
+    },
+    "web_accessible_resources": [
+      {
+        "matches": ["<all_urls>"],
+        "resources": ["*"]
+      }
+    ]
+  }
+  

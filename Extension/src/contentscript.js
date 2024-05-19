@@ -7,6 +7,18 @@ const sendPageUrlToBackground = () => {
   chrome.runtime.sendMessage({ type: 'analyzePageUrl', url: currentUrl });
 };
 
+const loadComponent = (componentScript) => {
+  const script = document.createElement('script');
+  script.src = chrome.runtime.getURL(`${componentScript}.js`);
+  script.type = 'module';
+  document.body.appendChild(script);
+};
+
+const blockPage = () => {
+  // Load the blocker component
+  loadComponent('blocker');
+}
+
 // Function to display loader
 const showLoader = () => {
   // Block the page content
@@ -20,25 +32,6 @@ const showLoader = () => {
   overlay.style.background = 'rgba(0, 0, 0, 0.5)';
   overlay.style.zIndex = '9998';
   document.body.appendChild(overlay);
-};
-
-const blockPage = () => {
-    // display loader on the page
-    const loader = document.createElement('div');
-    loader.id = 'request-blocker-loader';
-    loader.innerHTML = 'SITE IS MALICIOUS GO BACK!'; // You can customize the loader content here
-    loader.style.fontFamily = 'Arial, sans-serif';
-    loader.style.color = 'white';
-    loader.style.fontSize = '5rem';
-    loader.style.position = 'fixed';
-    loader.style.top = '50%';
-    loader.style.left = '50%';
-    loader.style.transform = 'translate(-50%, -50%)';
-    loader.style.background = 'black';
-    loader.style.padding = '20px';
-    loader.style.borderRadius = '8px';
-    loader.style.zIndex = '9999';
-    document.body.appendChild(loader);
 };
 
 // Remove the loader element from the page

@@ -8,6 +8,7 @@ async function sendMessageToActiveTab(message) {
 
 // Function to analyze and update rules dynamically
 const analyzeAndBlock = async (url, sender) => {
+    let result = {};
     try {
         // Show loader on the page
         console.log('Analyzing URL:', url);
@@ -25,7 +26,7 @@ const analyzeAndBlock = async (url, sender) => {
             body: JSON.stringify({ url })
         });
 
-        const result = await response.json();
+        result = await response.json();
 
         if (result.prediction !== 'benign') {
             // Block the page if it's malicious
@@ -83,8 +84,30 @@ const analyzeAndBlock = async (url, sender) => {
     } finally {
         // Hide loader on the page
         console.log('Done analyzing URL:', url);
+        writeLog({ url, malicious: result.prediction !== 'benign' });
     }
 };
+
+// Write logs on chrome storage local to be read by the popup
+const writeLog = (message) => {
+    // Check if logs exist in storage
+    if (chrome.storage) {
+        console.log('Writing log:', message);
+        // Fetch logs from storage and update state and replace if it exists
+        chrome.storage.local.get('logs', (result) => {
+            let logs = result.logs || [];
+            logs.map((log) => {
+                if (log.url === message.url) {
+                    log.malicious = message.malicious;
+                }
+                return log;
+            });
+            logs.push(message);
+            chrome.storage.local.set({ logs });
+        });
+    }
+};
+    
 
 // Function to analyze other requests on the page
 const analyzeOtherRequests = () => {

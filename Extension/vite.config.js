@@ -1,5 +1,3 @@
-// vite.config.js
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { crx } from '@crxjs/vite-plugin';
@@ -10,11 +8,15 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
+        content: 'src/contentscript.js',
+        blocker: 'src/components/blocker.jsx',
         background: 'src/background.js',
-        popup: 'index.html' 
+        popup: 'index.html'
       },
       output: {
-        entryFileNames: '[name].js'
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name].js',
+        assetFileNames: '[name].[ext]'
       }
     }
   }
