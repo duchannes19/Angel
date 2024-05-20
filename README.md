@@ -39,4 +39,16 @@
 
 2. When running the Flask app use the ml python environment.
 
-## For the Server Application use the start.py with the right conda environment.
+## Flask Server
+
+1. Run with waitress (production server):
+
+```
+waitress-serve --host 127.0.0.1 --port 5000 app:app
+```
+
+## Extension
+
+1. The extension is a Vite React application that uses background to communicate with the Flask Server and a contentscript to inject stuff inside the DOM.
+
+2. Build the extension and load it in chrome://extensions.

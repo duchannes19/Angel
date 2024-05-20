@@ -12,3 +12,4 @@ pefile
 cryptography
 asn1crypto
 netifaces
+waitress
