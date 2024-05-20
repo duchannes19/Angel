@@ -29,10 +29,31 @@ const App = () => {
     }
   }
 
+  const clearRules = async () => {
+    if (chrome.storage) {
+      // Get all rules ids
+      const rules = await new Promise((resolve) => {
+        chrome.declarativeNetRequest.getDynamicRules((rules) => {
+          resolve(rules);
+        });
+      });
+
+      // Remove all rules
+      await new Promise((resolve) => {
+        chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: rules.map((rule) => rule.id) }, () => {
+          resolve();
+        });
+      });
+    }
+  }
+
   return (
     <Box p={4} className='' display={'flex'} justifyContent={'center'} alignItems={'center'} flexDir={'column'}>
       <Image src={Angel} alt="Logo" mb={2} w={'50%'} />
-      <Button onClick={() => clearLogs()}>Clear Logs</Button>
+      <Box mb={4} display={'flex'} justifyContent={'center'} alignItems={'center'} gap={4}>
+        <Button onClick={() => clearLogs()}>Clear Logs</Button>
+        <Button onClick={() => clearRules()}>Clear Rules</Button>
+      </Box>
       <List spacing={3} textAlign={'center'}>
         {logs.map((log, index) => (
           <ListItem key={index}>
