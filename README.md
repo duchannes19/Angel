@@ -35,9 +35,7 @@
 
 ## For Training on Juppyter NB
 
-1. Select the kernel 'ml' from the pop up window in Visual Studio Code when using ipynb.
-
-2. When running the Flask app use the ml python environment.
+1. Select the kernel 'ml' from the pop up window in Visual Studio Code when using CNN.ipynb.
 
 ## Flask Server
 
@@ -47,8 +45,30 @@
 waitress-serve --host 127.0.0.1 --port 5000 app:app
 ```
 
+2. Remember to use the correct environment.
+
 ## Extension
 
-1. The extension is a Vite React application that uses background to communicate with the Flask Server and a contentscript to inject stuff inside the DOM.
+1. The extension is a Vite React application that uses background to communicate with the Server and a contentscript to inject stuff inside the DOM.
 
-2. Build the extension and load it in chrome://extensions.
+2. Install dependencies with:
+
+```
+npm i
+```
+
+2. Build the extension and load it in chrome://extensions:
+
+```
+npm run build
+```
+
+## To Do
+
+1. Whitelist implementation (pysondb).
+
+2. More interaction with the server from the Extension.
+
+3. Dockerize the server.
+
+4. More...

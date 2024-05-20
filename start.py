@@ -3,8 +3,11 @@ import os
 # Get the path of the current directory
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
+# Set os directory to the current directory
+os.chdir(current_directory)
+
 # Load ans file to display the menu
-ans = open(f"{current_directory}\\angel.txt", "r")
+ans = open(f"angel.txt", "r")
 print(ans.read())
 print("Welcome to the Angel Server!\n")
 
@@ -16,13 +19,14 @@ def display_menu():
 
 def execute_service(service_number):
     if service_number == 1:
-        # Start the Angel Server with anaconda environment
+        # Start the Angel Server
         print("\nStarting the Angel Server...\n")
-        os.system(f"python {current_directory}\\Server\\app.py")
+        os.chdir(current_directory+"/Server")
+        os.system(f"waitress-serve --host 127.0.0.1 --port 5000 app:app")
     elif service_number == 2:
         # Install dependencies
         print("\nInstalling dependencies...\n")
-        os.system(f"pip install -r {current_directory}\\requirements.txt")
+        os.system(f"pip install -r requirements.txt")
     else:
         print("\nExiting...\n")
         exit()

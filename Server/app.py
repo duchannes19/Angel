@@ -41,24 +41,26 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 # Get the path of the current directory
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
-print('Loading model...')
+print(f'{Bcolors.Yellow}Server loading...{Bcolors.Endc}')
 
 # Construct the path to the trained model file and load it
 model_path = os.path.join(current_directory, 'url_classifier.pth')
 model = load_model(model_path)
 
-print('CNN loaded successfully!')
-
 # Set the model to evaluation mode
 model.eval()
 
-print('CNN is in evaluation mode!')
+print(f'{Bcolors.Green}CNN loaded successfully and in Evaluation mode.{Bcolors.Endc}')
 
 # Load Logistic Regression model
 #logistic_model_path = os.path.join(current_directory, 'logistic_regression_model.pkl')
 #logistic_model = joblib.load(logistic_model_path)
 #print(logistic_model)
 #print('Logistic Regression model loaded successfully!')
+
+print(f'{Bcolors.Green}Server loaded successfully, waiting for requests.{Bcolors.Endc}')
+
+print(f'{Bcolors.Yellow}Use CTRL+C to stop.{Bcolors.Endc}')
 
 # Define a route to receive URL requests
 @app.route('/analyze_url', methods=['POST'])
