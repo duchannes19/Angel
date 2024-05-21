@@ -9,6 +9,9 @@ import re
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #import joblib
 
+# Import the database functions
+from database import Database
+
 # CNN model import
 from model import load_model
 
@@ -61,6 +64,14 @@ print(f'{Bcolors.Green}CNN loaded successfully and in Evaluation mode.{Bcolors.E
 print(f'{Bcolors.Green}Server loaded successfully, waiting for requests.{Bcolors.Endc}')
 
 print(f'{Bcolors.Yellow}Use CTRL+C to stop.{Bcolors.Endc}')
+
+try:
+    # Load the database
+    db = Database('database.json')
+except Exception as e:
+    print(f'{Bcolors.Red}Error loading the database: {e}{Bcolors.Endc}')
+
+print(f'{Bcolors.Green}Database loaded successfully!{Bcolors.Endc}')
 
 # Define a route to receive URL requests
 @app.route('/analyze_url', methods=['POST'])
@@ -145,6 +156,7 @@ def analyze_url():
     
     # Return the prediction as JSON response
     return jsonify({'prediction': prediction, 'ismalware' : malware_result}) #'logistic_prediction': logistic_prediction})
+
 
 if __name__ == '__main__':
     app.run()
