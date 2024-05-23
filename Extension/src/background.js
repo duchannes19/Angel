@@ -253,9 +253,9 @@ const analyzeAndBlock = async (url, sender) => {
                 }
             };
 
-            const hideLoader = await sendMessageToActiveTab({ type: 'hideLoader' });
+            const hideBlocker = await sendMessageToActiveTab({ type: 'hideBlocker' });
             const hideOverlay = await sendMessageToActiveTab({ type: 'hideOverlay' });
-            console.log('Loader hidden:', hideLoader, hideOverlay)
+            console.log('Loader hidden:', hideBlocker, hideOverlay)
 
             // Analyze other requests on the page
             //analyzeOtherRequests();
@@ -297,14 +297,47 @@ const writeLog = (message) => {
 };
 
 
-// Function to analyze other requests on the page
-const analyzeOtherRequests = () => {
-    // Code to analyze other requests on the page
+// Function to whitelist
+const addToWhitelist = async (url, sender) => {
+    try {
+        // Send request to the server to add the URL to the whitelist
+        const response = await fetch('http://localhost:5000/add_to_whitelist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url })
+        });
+
+        // Check if the response is successful
+        if (response.ok) {
+            // Remove the rule from the rules list
+            console.log('Removing from rules:', url);
+            const ruleId = Number.parseInt(sha256(url).substring(0, 5), 16);
+            console.log('Rule ID:', ruleId);
+            chrome.declarativeNetRequest.updateDynamicRules({
+                removeRuleIds: [ruleId]
+            });
+            // Send message back to the sender
+            const request = await chrome.tabs.sendMessage(sender.tab.id, { type: 'whitelistAdded', url });
+            console.log('Response from whitelisted contentscript:', request);
+            writeLog({ url, malicious: false });
+        } else {
+            console.error('Error adding to whitelist:', response.statusText);
+            await chrome.tabs.sendMessage(sender.tab.id, { type: 'showError', message: 'Error adding to whitelist' });
+        }
+    } catch (error) {
+        console.error('Error adding to whitelist:', error);
+        await chrome.tabs.sendMessage(sender.tab.id, { type: 'showError', message: 'Error adding to whitelist' });
+    }
 };
 
 // Listen for messages from content script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'analyzePageUrl') {
         analyzeAndBlock(request.url, sender);
+    } 
+    else if (request.type === 'addToWhitelist') {
+        addToWhitelist(request.url, sender);
     }
 });

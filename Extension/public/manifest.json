@@ -1,44 +1,47 @@
 {
-    "manifest_version": 3,
-    "name": "Request Blocker",
-    "version": "1.0",
-    "permissions": [
-      "declarativeNetRequest",
-      "declarativeNetRequestWithHostAccess",
-      "declarativeNetRequestFeedback",
-      "storage",
-      "tabs",
-      "activeTab"
-    ],
-    "background": {
-      "service_worker": "src/background.js"
-    },
-    "host_permissions": [
-      "*://*/*"
-    ],
-    "content_scripts": [
+  "manifest_version": 3,
+  "name": "Request Blocker",
+  "version": "1.0",
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "declarativeNetRequestFeedback",
+    "storage",
+    "tabs",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/contentscript.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
       {
-        "matches": ["<all_urls>"],
-        "js": ["src/contentscript.js"]
-      }
-    ],
-    "action": {
-      "default_popup": "index.html"
-    },
-    "declarative_net_request": {
-      "rule_resources": [
-        {
-          "id": "ruleset_1",
-          "enabled": true,
-          "path": "rules.json"
-        }
-      ]
-    },
-    "web_accessible_resources": [
-      {
-        "matches": ["<all_urls>"],
-        "resources": ["*"]
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
       }
     ]
+  },
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["*"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
   }
-  
+}

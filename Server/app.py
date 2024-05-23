@@ -92,6 +92,14 @@ def analyze_url():
     # Remove protocol at the beginning of the URL and www. if present
     url = re.sub(r'^https?:\/\/(www\.)?', '', url).strip()
     
+    # Check if the URL exists in the database (whitelist)
+    iswhitelisted = db.check_url(url)
+    
+    if iswhitelisted is not None:
+        return jsonify({'prediction': 'benign', 'ismalware' : False})
+    
+    # Continue with the prediction
+    
     print('URL preprocessed: ', url)
 
     # Perform inference using the CNN model
@@ -157,6 +165,20 @@ def analyze_url():
     # Return the prediction as JSON response
     return jsonify({'prediction': prediction, 'ismalware' : malware_result}) #'logistic_prediction': logistic_prediction})
 
+
+@app.route('/add_to_whitelist', methods=['POST'])
+def add_to_whitelist():
+    url = request.json.get('url')
+    is_malicious = False
+    
+    url = re.sub(r'^https?:\/\/(www\.)?', '', url).strip()
+    
+    print(f'Adding URL to whitelist: {url}')
+    
+    # Write the URL to the database
+    db.write(url, is_malicious)
+    
+    return jsonify({'message': 'URL added to whitelist successfully!', 'success': True})
 
 if __name__ == '__main__':
     app.run()

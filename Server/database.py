@@ -22,3 +22,10 @@ class Database:
         for item in data:
             csv += f"{item['url']},{item['type']}\n"
         return csv
+    
+    def check_url(self, url):
+        data = self.get_all()
+        for item in data:
+            if item['url'] == url:
+                return item['type']
+        return None

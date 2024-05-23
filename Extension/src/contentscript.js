@@ -17,6 +17,14 @@ const loadComponent = (componentScript) => {
 const blockPage = () => {
   // Load the blocker component
   loadComponent('blocker');
+  // Add a button to whitelist the page
+  const button = document.createElement('button');
+  button.id = 'whitelist-button';
+  button.innerHTML = 'Whitelist this page';
+  button.style = 'position: fixed; bottom: 10px; right: 10px; padding: 10px; border: none; background: white; color: black; cursor: pointer; z-index: 9999; border-radius: 5px;';
+  const currentUrl = window.location.href;
+  button.onclick = () => sendWhitelistMessage(currentUrl);
+  document.body.appendChild(button);
 }
 
 // Function to display loader
@@ -40,10 +48,12 @@ const hideOverlay = () => {
   if (overlay) overlay.remove();
 };
 
-const hideLoader = () => {
+const hideBlocker = () => {
   // Remove the loader element from the page
-  const loader = document.getElementById('request-blocker-loader');
+  const loader = document.getElementById('blocker');
+  const button = document.getElementById('whitelist-button');
   if (loader) loader.remove();
+  if (button) button.remove();
 };
 
 const showError = (message) => {
@@ -62,6 +72,14 @@ const showError = (message) => {
   document.body.appendChild(error);
 };
 
+const sendWhitelistMessage = (url) => {
+  // Confirmation window to whitelist the page
+  const confirmation = confirm('Do you want to whitelist this page?');
+  if (confirmation) {
+    chrome.runtime.sendMessage({ type: 'addToWhitelist', url });
+  }
+}
+
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'showLoader') {
@@ -70,8 +88,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.type === 'blockPage') {
     blockPage();
     sendResponse({ message: 'Page blocked' });
-  } else if (request.type === 'hideLoader') {
-    hideLoader();
+  } else if (request.type === 'hideBlocker') {
+    hideBlocker();
     sendResponse({ message: 'Loader hidden' });
   } else if (request.type === 'hideOverlay') {
     hideOverlay();
@@ -79,6 +97,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.type === 'showError') {
     showError(request.message);
     sendResponse({ message: 'Error displayed' });
+  } else if (request.type === 'whitelistAdded') {
+    hideOverlay();
+    hideBlocker();
+    sendResponse({ message: 'Whitelist added, blocker removed' });
   }
 });
 
