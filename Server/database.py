@@ -15,13 +15,25 @@ class Database:
             "type": is_malicious
         })
     
-    # Get data and convert it to a csv format
+    # Get data and convert it to a csv format without type
     def get_csv(self):
         data = self.get_all()
-        csv = "url,type\n"
+        csv = ""
+        # If type is True, then write 'malicious' to the csv file, otherwise write 'benign'
         for item in data:
-            csv += f"{item['url']},{item['type']}\n"
+            type = "malicious" if item['type'] else "benign"
+            csv += f"\n{item['url']},{type}\n"
         return csv
+    
+        
+    # Delete all data from the database
+    def delete_all(self):
+        # Get all data from the database
+        data = self.get_all()
+        # Delete all data from the database by id
+        for item in data:
+            self.db.deleteById(item['id'])
+        return True
     
     def check_url(self, url):
         data = self.get_all()

@@ -21,6 +21,9 @@ from urllib.request import urlretrieve
 # Import the scanner main function
 from Scanner.scanner import scan_malware
 
+# Import the retrain function
+from train import retrain
+
 # Color class for printing
 class Bcolors:
     Black = '\033[30m'
@@ -48,10 +51,10 @@ print(f'{Bcolors.Yellow}Server loading...{Bcolors.Endc}')
 
 # Construct the path to the trained model file and load it
 model_path = os.path.join(current_directory, 'url_classifier.pth')
-model = load_model(model_path)
+MODEL = load_model(model_path)
 
 # Set the model to evaluation mode
-model.eval()
+MODEL.eval()
 
 print(f'{Bcolors.Green}CNN loaded successfully and in Evaluation mode.{Bcolors.Endc}')
 
@@ -110,7 +113,7 @@ def analyze_url():
 
     # Perform inference using the model
     with torch.no_grad():
-        outputs = model(tokens['input_ids'])
+        outputs = MODEL(tokens['input_ids'])
     
     # Get the predicted class label
     _, predicted = torch.max(outputs, 1)
@@ -180,5 +183,48 @@ def add_to_whitelist():
     
     return jsonify({'message': 'URL added to whitelist successfully!', 'success': True})
 
+@app.route('/get_whitelist', methods=['GET'])
+def get_whitelist():
+    print(f'{Bcolors.Yellow}Getting whitelist...{Bcolors.Endc}')
+    data = db.get_all()
+    print(f'{Bcolors.Green}Whitelist retrieved successfully and sent!{Bcolors.Endc}')
+    return jsonify(data)
+
+# Retrain the CNN model using the new data from the database
+@app.route('/retrain', methods=['POST'])
+def train_again():
+    
+    # Get the data from the database as a CSV string
+    print(f'{Bcolors.Yellow}Retraining the model...{Bcolors.Endc}')
+    data = db.get_csv()
+    
+    # Check if the data is empty
+    if len(data) == 0:
+        return jsonify({'message': 'No new data to retrain the model!', 'success': False})
+    
+    # Check if there is at least 10 URLs in the database
+    #if len(data.split('\n')) < 10:
+    #    return jsonify({'message': 'Not enough data to retrain the model!', 'success': False})
+    
+    # Append the data to the dataset
+    with open('main_dataset.csv', 'a') as file:
+        file.write(data)
+    
+    try:
+        train = retrain('main_dataset.csv')
+        if(train):
+            # Load the new model
+            global MODEL
+            MODEL = load_model(model_path)
+            # Clear the database
+            db.delete_all()
+            
+    except Exception as e:
+        return jsonify({'message': f'Error retraining the model: {e}', 'success': False})
+    
+    print(f'{Bcolors.Green}Model retrained successfully!{Bcolors.Endc}')
+    return jsonify({'message': 'Model retrained successfully!', 'success': True})
+    
+    
 if __name__ == '__main__':
     app.run()
