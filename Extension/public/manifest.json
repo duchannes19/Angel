@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Request Blocker",
+  "name": "Angel Extension",
   "version": "1.0",
   "permissions": [
     "declarativeNetRequest",
@@ -25,6 +25,10 @@
   "action": {
     "default_popup": "index.html"
   },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
   "declarative_net_request": {
     "rule_resources": [
       {
@@ -40,8 +44,12 @@
       "resources": ["*"]
     }
   ],
+  "icons": {
+    "16": "src/assets/16.png",
+    "48": "src/assets/48.png",
+    "128": "src/assets/128.png"
+  },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';",
-    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
+    "extension_pages": "script-src 'self'; object-src 'self';"
   }
 }
