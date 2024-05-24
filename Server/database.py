@@ -22,7 +22,7 @@ class Database:
         # If type is True, then write 'malicious' to the csv file, otherwise write 'benign'
         for item in data:
             type = "malicious" if item['type'] else "benign"
-            csv += f"\n{item['url']},{type}\n"
+            csv += f"\n{item['url']},{type}"
         return csv
     
         

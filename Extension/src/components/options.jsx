@@ -1,7 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Box, Button, Input, Text, Image, Divider } from '@chakra-ui/react';
 import axios from 'axios';
+
+import { Box, Button, Text, Image, Divider } from '@chakra-ui/react';
+
+import Notify from './Notify';
 
 import Angel from '../assets/angel.png';
 
@@ -10,6 +12,7 @@ const Options = () => {
   const [logs, setLogs] = React.useState([]);
   const [whitelist, setWhitelist] = React.useState([]);
   const [mediaquery, setMediaquery] = React.useState(window.matchMedia('(max-width: 768px)'));
+  const [isretraining, setIsRetraining] = React.useState(false);
 
   React.useEffect(() => {
     // Check if logs exist in storage
@@ -25,9 +28,14 @@ const Options = () => {
 
   React.useEffect(() => {
     const getWhitelist = async () => {
-      const response = await axios.get('http://localhost:5000/get_whitelist');
-      console.log(response.data);
-      setWhitelist(response.data);
+      try {
+        const response = await axios.get('http://localhost:5000/get_whitelist');
+        console.log(response.data);
+        setWhitelist(response.data);
+      }
+      catch (error) {
+        console.log(error);
+      }
     }
 
     getWhitelist();
@@ -38,6 +46,26 @@ const Options = () => {
     mediaquery.addEventListener('change', handler);
     return () => mediaquery.removeEventListener('change', handler);
   }, [mediaquery]);
+
+  const retrainModel = async () => {
+    setIsRetraining(true);
+    const confirm = window.confirm('Are you sure you want to retrain the model?');
+    if (!confirm){
+      setIsRetraining(false);
+      return;
+    }
+    Notify('info', 'Retraining model...');
+    try {
+      const response = await axios.post('http://localhost:5000/retrain');
+      console.log(response.data);
+      Notify('success', 'Model retrained successfully');
+    } catch (error) {
+      console.log(error);
+      Notify('error', 'Failed to retrain model');
+    } finally {
+      setIsRetraining(false);
+    }
+  };
 
   return (
     <Box p={4} display={'flex'} justifyContent={'flex-start'} alignItems={'center'} flexDir={'column'} bg={'#242424'} height={'100vh'} width={'100vw'} textAlign={'center'} overflowY={'auto'}>
@@ -60,6 +88,15 @@ const Options = () => {
             <Text color={'white'} key={index}>{url.url}</Text>
           )) : <Text color={'white'}>No whitelist available</Text>}
         </Box>
+        {/* Divider */}
+        <Divider orientation="horizontal" gridColumn="span 2" borderColor={'white'} />
+        {/* Third row with three components: 'Retrain model' with warnings, button */}
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} flexDir={'column'}>
+          <Text color={'white'} style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Retrain Model</Text>
+          <Text color={'white'} style={{ fontSize: '0.8rem' }}><b>Warning</b>: This will take a lot depending on your system capabilities.</Text>
+          <Text color={'white'} style={{ fontSize: '0.8rem' }}>Only retrain the model if you are sure, otherwise stick to the whitelist.</Text>
+        </Box>
+        <Button disabled={isretraining} colorScheme={isretraining ? 'gray' : 'blue'} onClick={retrainModel} w={'auto'} margin={'auto'}>{isretraining ? 'Retraining...' : 'Retrain Model'}</Button>
       </Box>
     </Box>
   );

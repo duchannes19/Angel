@@ -54,10 +54,11 @@ const App = () => {
         <Button onClick={() => clearLogs()}>Clear Logs</Button>
         <Button onClick={() => clearRules()}>Clear Rules</Button>
       </Box>
-      <List spacing={3} textAlign={'center'}>
+      <List spacing={3} textAlign={'center'} w={'100%'} maxH={'70vh'} overflowY={'auto'}>
         {logs.map((log, index) => (
           <ListItem key={index}>
-            <Text>{log.url} - {log.malicious ? 'Blocked' : 'Allowed'}</Text>
+            {/* If the url is too long, truncate it */}
+            <Text>{log.url.length > 30 ? `${log.url.substring(0, 30)}...` : log.url} - {log.malicious ? 'Blocked' : 'Allowed'}</Text>
           </ListItem>
         ))}
       </List>
