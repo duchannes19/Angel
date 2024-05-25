@@ -56,20 +56,9 @@ const hideBlocker = () => {
   if (button) button.remove();
 };
 
-const showError = (message) => {
+const showError = () => {
   // Display error message on the page
-  const error = document.createElement('div');
-  error.id = 'request-blocker-error';
-  error.innerHTML = message; // You can customize the error message here
-  error.style.position = 'fixed';
-  error.style.top = '50%';
-  error.style.left = '50%';
-  error.style.transform = 'translate(-50%, -50%)';
-  error.style.background = 'rgba(255, 255, 255, 0.8)';
-  error.style.padding = '20px';
-  error.style.borderRadius = '8px';
-  error.style.zIndex = '9999';
-  document.body.appendChild(error);
+  loadComponent('error');
 };
 
 const sendWhitelistMessage = (url) => {
@@ -88,19 +77,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.type === 'blockPage') {
     blockPage();
     sendResponse({ message: 'Page blocked' });
-  } else if (request.type === 'hideBlocker') {
+  } else if (request.type === 'hideAll') {
     hideBlocker();
+    hideOverlay();
     sendResponse({ message: 'Loader hidden' });
+    if (request.alreadyExist){
+      window.location.reload();
+    }
   } else if (request.type === 'hideOverlay') {
     hideOverlay();
     sendResponse({ message: 'Overlay hidden' });
   } else if (request.type === 'showError') {
-    showError(request.message);
+    showError();
     sendResponse({ message: 'Error displayed' });
   } else if (request.type === 'whitelistAdded') {
     hideOverlay();
     hideBlocker();
     sendResponse({ message: 'Whitelist added, blocker removed' });
+    // Refresh the page after whitelisting
+    window.location.reload();
   }
 });
 

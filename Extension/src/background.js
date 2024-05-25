@@ -218,7 +218,7 @@ const analyzeAndBlock = async (url, sender) => {
                         addRules: [{ id: ruleId, priority: 1, action: { type: 'block' }, condition: { urlFilter: url } }]
                     });
                 }
-            } else {
+            } else {                
                 chrome.declarativeNetRequest.updateDynamicRules({
                     addRules: [{ id: ruleId, priority: 1, action: { type: 'block' }, condition: { urlFilter: url } }]
                 });
@@ -231,6 +231,8 @@ const analyzeAndBlock = async (url, sender) => {
             console.log('Allowing URL:', url);
             // Check if the rule already exists with the same URL
             // If it exists, we remove it
+
+            let alreadyExists = false;
 
             const rules = await new Promise((resolve) => {
                 chrome.declarativeNetRequest.getDynamicRules((rules) => {
@@ -247,15 +249,15 @@ const analyzeAndBlock = async (url, sender) => {
                 const rule = rules.find((rule) => rule.id === ruleId);
                 if (rule) {
                     console.log('Removing rule:', ruleId);
+                    alreadyExists = true;
                     chrome.declarativeNetRequest.updateDynamicRules({
                         removeRuleIds: [ruleId]
                     });
                 }
             };
 
-            const hideBlocker = await sendMessageToActiveTab({ type: 'hideBlocker' });
-            const hideOverlay = await sendMessageToActiveTab({ type: 'hideOverlay' });
-            console.log('Loader hidden:', hideBlocker, hideOverlay)
+            const hideOverlay = await sendMessageToActiveTab({ type: 'hideAll', alreadyExists });
+            console.log('Loader hidden:', hideOverlay)
 
             // Analyze other requests on the page
             //analyzeOtherRequests();

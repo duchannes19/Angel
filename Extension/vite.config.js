@@ -13,6 +13,7 @@ export default defineConfig({
       input: {
         main: 'src/main.jsx', // Your main entry point
         blocker: 'src/components/blocker.jsx',
+        error: 'src/components/error.jsx',
         options: 'src/main_options.jsx', // Options page entry point
         popup: 'index.html',
         option: 'options.html'

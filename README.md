@@ -2,9 +2,15 @@
     <img src="angel.png" alt="Image" width="30%" height="30%">
 </p>
 
+
 # ANGELs (Automated Network Guardian and Enhanced Local Security)
 
-## Setup
+## Introduction
+The following project is a tool used to analyze url requests during navigation and evaluate the security of the website based on
+predictions with a Convolutional Neural Network. The tool is implemented as a Chrome extension and a Flask server. The extension
+intercepts requests made by the browser and sends them to the server for analysis. The server uses a model trained by us with a modified dataset to predict the security of the website and sends the result back to the extension. The extension then displays the result to the user.
+
+## Setup For Local Development
 
 1. **Installing Anaconda:**
    - Visit the Anaconda website at https://www.anaconda.com/download/success.
@@ -15,60 +21,58 @@
 2. **Creating a 'ml' Environment:**
    - Open a terminal or command prompt. On Windows search for 'Anaconda Terminal' or 'Anaconda Powershell Terminal', I think on Linux also.
    - Type the following command to create a new Anaconda environment named 'ml':
-     ```bash
+     ```
      conda create --name ml
      ```
 
 3. **Activating the 'ml' Environment:**
    - Activate the 'ml' environment by running the following command:
-     ```bash
+     ```
      conda activate ml
      ```
 
 4. **Installing Requirements.txt:**
    - Navigate to the directory where the requirements.txt file is located.
    - Install the requirements using the following command:
-     ```bash
+     ```
      pip install -r requirements.txt
      ```
    - This may require administrative rights.
 
-## For Training on Juppyter NB
+5. **Build Extension**
+   - Navigate to the extension directory.
+   - Install dependencies with:
+     ```
+     npm i
+     ```
+   - Build the extension and load it in chrome://extensions:
+     ```bash
+     npm run build
+     ```
+   - Load the extension in Chrome by enabling developer mode and loading the extension from the build folder.
 
-1. Select the kernel 'ml' from the pop up window in Visual Studio Code when using CNN.ipynb.
+6. **Running the Angel Server:**
+   - Run the Flask server using the following command:
+     ```
+     waitress-serve --host 127.0.0.1 --port 5000 app:app
+     ```
 
-## Flask Server
+7. **Easy Run:**
+   - Run the following command in the root directory to start the server or install dependencies instead:
+     ```
+     python start.py
+     ```
 
-1. Run with waitress (production server):
+## Docker Setup
 
-```
-waitress-serve --host 127.0.0.1 --port 5000 app:app
-```
+1. **Building the Docker Image:**
+   - Navigate to the Server directory of the project.
+   - Build the Docker image using the following command:
+     ```
+     docker build -t angel .
+     ```
 
-2. Remember to use the correct environment.
+### Credits
 
-## Extension
-
-1. The extension is a Vite React application that uses background to communicate with the Server and a contentscript to inject stuff inside the DOM.
-
-2. Install dependencies with:
-
-```
-npm i
-```
-
-2. Build the extension and load it in chrome://extensions:
-
-```
-npm run build
-```
-
-## To Do
-
-1. Whitelist implementation (pysondb).
-
-2. More interaction with the server from the Extension.
-
-3. Dockerize the server.
-
-4. More...
+- [Malware Scan](https://github.com/password123456/malwarescanner/tree/main)
+- [Url Dataset](https://www.kaggle.com/datasets/sid321axn/malicious-urls-dataset/data)  
