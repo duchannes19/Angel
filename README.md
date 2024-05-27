@@ -71,6 +71,10 @@ intercepts requests made by the browser and sends them to the server for analysi
      ```
      docker build -t angel .
      ```
+   - Run the Docker container using the following command:
+     ```
+     docker run -p 5000:5000 -e PYTHONUNBUFFERED=1 -d angel
+     ```
 
 ### Credits
 
