@@ -58,7 +58,7 @@ const App = () => {
         {logs.map((log, index) => (
           <ListItem key={index}>
             {/* If the url is too long, truncate it */}
-            <Text>{log.url.length > 30 ? `${log.url.substring(0, 30)}...` : log.url} - {log.malicious ? 'Blocked' : 'Allowed'}</Text>
+            <Text color={log.malicious ? 'red' : 'green'}>{log.url.length > 30 ? `${log.url.substring(0, 30)}...` : log.url} - {log.malicious ? 'Blocked' : 'Allowed'}</Text>
           </ListItem>
         ))}
       </List>

@@ -225,6 +225,12 @@ def train_again():
     print(f'{Bcolors.Green}Model retrained successfully!{Bcolors.Endc}')
     return jsonify({'message': 'Model retrained successfully!', 'success': True})
     
-    
+@app.route('/delete_whitelist', methods=['DELETE'])
+def delete_whitelist():
+    print(f'{Bcolors.Yellow}Deleting whitelist...{Bcolors.Endc}')
+    db.delete_all()
+    print(f'{Bcolors.Green}Whitelist deleted successfully!{Bcolors.Endc}')
+    return jsonify({'message': 'Whitelist deleted successfully!', 'success': True})
+
 if __name__ == '__main__':
     app.run()

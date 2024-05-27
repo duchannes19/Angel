@@ -96,6 +96,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ message: 'Whitelist added, blocker removed' });
     // Refresh the page after whitelisting
     window.location.reload();
+  } else if (request.type === 'refreshPage') {
+    window.location.reload();
   }
 });
 

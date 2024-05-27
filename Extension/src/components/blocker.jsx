@@ -6,7 +6,7 @@ import { Box, Text } from '@chakra-ui/react';
 const Blocker = () => {
 
     return (
-        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'} height={'100vh'} width={'100vw'} bg={'black'} textAlign={'center'} position={'fixed'} top={0} left={0} zIndex={9998}>
+        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'} height={'100vh'} width={'100vw'} bg={'black'} textAlign={'center'} position={'fixed'} top={0} left={0} zIndex={9998} gap={'4rem'}>
             <Text fontSize={'4rem'} color={'white'}>The Site has been blocked</Text>
             <Text fontSize={'1.5rem'} color={'white'}>You think it is safe?</Text>
         </Box>

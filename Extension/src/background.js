@@ -188,6 +188,8 @@ const analyzeAndBlock = async (url, sender) => {
             body: JSON.stringify({ url })
         });
 
+        let alreadyExists = false;
+
         result = await response.json();
 
         if (result.prediction !== 'benign') {
@@ -212,6 +214,7 @@ const analyzeAndBlock = async (url, sender) => {
                 const rule = rules.find((rule) => rule.id === ruleId);
                 if (rule) {
                     console.log('Rule already exists:', ruleId);
+                    alreadyExists = true;
                 }
                 else {
                     chrome.declarativeNetRequest.updateDynamicRules({
@@ -226,13 +229,14 @@ const analyzeAndBlock = async (url, sender) => {
 
             const blockPage = await sendMessageToActiveTab({ type: 'blockPage' });
             console.log('Page blocked:', blockPage);
+            if (!alreadyExists) {
+                chrome.tabs.sendMessage(sender.tab.id, { type: 'refreshPage' });
+            }
         } else {
             // Allow the page if it's benign
             console.log('Allowing URL:', url);
             // Check if the rule already exists with the same URL
             // If it exists, we remove it
-
-            let alreadyExists = false;
 
             const rules = await new Promise((resolve) => {
                 chrome.declarativeNetRequest.getDynamicRules((rules) => {

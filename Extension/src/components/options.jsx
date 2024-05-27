@@ -50,7 +50,7 @@ const Options = () => {
   const retrainModel = async () => {
     setIsRetraining(true);
     const confirm = window.confirm('Are you sure you want to retrain the model?');
-    if (!confirm){
+    if (!confirm) {
       setIsRetraining(false);
       return;
     }
@@ -67,6 +67,21 @@ const Options = () => {
     }
   };
 
+  const deleteWhitelist = async () => {
+    const confirm = window.confirm('Are you sure you want to delete the whitelist?');
+    if (!confirm) return;
+    Notify('info', 'Deleting whitelist...');
+    try {
+      const response = await axios.delete('http://localhost:5000/delete_whitelist');
+      console.log(response.data);
+      Notify('success', 'Whitelist deleted successfully');
+      setWhitelist([]);
+    } catch (error) {
+      console.log(error);
+      Notify('error', 'Failed to delete whitelist');
+    }
+  }
+
   return (
     <Box p={4} display={'flex'} justifyContent={'flex-start'} alignItems={'center'} flexDir={'column'} bg={'#242424'} height={'100vh'} width={'100vw'} textAlign={'center'} overflowY={'auto'}>
       <Image src={Angel} alt="Logo" mb={1} w={mediaquery.matches ? '100px' : '300px'} />
@@ -76,13 +91,16 @@ const Options = () => {
         <Text color={'white'} style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Logs</Text>
         <Box display={'flex'} flexDir={'column'} gap={2} height={'auto'} overflowY={'auto'} width={'100%'} textAlign={'center'}>
           {logs.length > 0 ? logs.map((log, index) => (
-            <Text color={'white'} key={index}>{log.url} - {log.malicious ? 'Blocked' : 'Allowed'}</Text>
+            <Text color={log.malicious ? 'red' : 'green'} key={index}>{log.url} - {log.malicious ? 'Blocked' : 'Allowed'}</Text>
           )) : <Text color={'white'}>No logs available</Text>}
         </Box>
         {/* Divider */}
         <Divider orientation="horizontal" gridColumn="span 2" borderColor={'white'} />
         {/* Second row with two components: Whitelist title, then whitelist */}
-        <Text color={'white'} style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Whitelist</Text>
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} flexDir={'column'}>
+          <Text color={'white'} style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Whitelist</Text>
+          <Button colorScheme={'red'} onClick={deleteWhitelist} w={'auto'} margin={'auto'}>Delete Whitelist</Button>
+        </Box>
         <Box display={'flex'} flexDir={'column'} gap={2} height={'auto'} overflowY={'auto'} width={'100%'} textAlign={'center'}>
           {whitelist.length > 0 ? whitelist.map((url, index) => (
             <Text color={'white'} key={index}>{url.url}</Text>
