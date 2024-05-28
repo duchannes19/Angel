@@ -6,9 +6,8 @@
 # ANGELs (Automated Network Guardian and Enhanced Local Security)
 
 ## Introduction
-The following project is a tool used to analyze url requests during navigation and evaluate the security of the website based on
-predictions with a Convolutional Neural Network. The tool is implemented as a Chrome extension and a Flask server. The extension
-intercepts requests made by the browser and sends them to the server for analysis. The server uses a model trained by us with a modified dataset to predict the security of the website and sends the result back to the extension. The extension then displays the result to the user.
+The following project is a tool used to analyze URL requests during navigation and evaluate the security of the website based on the predictions of a Convolutional Neural Network. The tool is implemented as a Chrome extension and a Flask server. The extension
+intercepts requests made by the browser and sends them to the server for analysis. The server uses a model trained by us with a modified dataset to predict the security of the website based on the URL and sends the result back to the extension. The extension then displays the result to the user.
 
 ## Setup For Local Development
 
@@ -63,7 +62,7 @@ intercepts requests made by the browser and sends them to the server for analysi
      python start.py
      ```
 
-## Docker Setup
+## Docker Setup (Server)
 
 1. **Building the Docker Image:**
    - Navigate to the Server directory of the project.
